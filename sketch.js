@@ -271,20 +271,43 @@ overlay.style.display  = 'none';
 }
 
 
-function createUser(usern, passw){
-    console.log('THE HATERS')
-     let refpath = window.ref(window.database, `Accounts/`)
-window.getdata(refpath).then((snapshot) => {
-    let currentArray = snapshot.val(); 
+// function createUser(usern, passw){
+//     console.log('THE HATERS')
+//      let refpath = window.ref(window.database, `Accounts/`)
+// window.getdata(refpath).then((snapshot) => {
+//     let currentArray = snapshot.val(); 
    
   
     
-    currentArray.push([usern,passw,[0]]);
-   // console.log(`${currentArray.length} is the number of accounts and the array is`, currentArray);
+//     currentArray.push([usern,passw,[0]]);
+//    // console.log(`${currentArray.length} is the number of accounts and the array is`, currentArray);
   
-    let refpath = window.ref(window.database, `Accounts/`); 
-    window.firebaseSet(refpath, currentArray);
-    })
+//     let refpath = window.ref(window.database, `Accounts/`); 
+//     window.firebaseSet(refpath, currentArray);
+//     })
+// }
+
+function createUser(usern, passw){
+  console.log('THE HATERS');
+
+  let refpath = window.ref(window.database, `Accounts/`);
+  window.getdata(refpath).then((snapshot) => {
+      let currentArray = snapshot.val() || []; //make sure array
+
+      // Check if exists
+      for (let i = 0; i < currentArray.length; i++) {
+          if (currentArray[i][0] === usern) {
+              console.log('User already exists, not creating duplicate.');
+              return; //stop infinite
+          }
+      }
+
+      currentArray.push([usern, passw, [0]]); 
+      console.log(`New account created for ${usern}`);
+
+      let refpath = window.ref(window.database, `Accounts/`); 
+      window.firebaseSet(refpath, currentArray);
+  });
 }
 
 function checklogin() {
